@@ -1,0 +1,19 @@
+.tabs {
+    width: 100%;
+    overflow: hidden;
+    offset-position: -100px;
+    position: fixed;
+}
+.tabs button{
+    float:left;
+    width: 25%;
+    padding: 16px 16px;
+    font-size: 20px;
+}
+body{
+    margin:0;
+}
+.page {
+    margin-top: 50px;
+    position: absolute;
+}
