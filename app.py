@@ -8,6 +8,9 @@ def home():
 @app.route('/stats')
 def about():
     return render_template('stats.html')
-@app.route('/support')
+@app.route('/camera')
 def support():
-    return render_template('support.html')
+    return render_template('camera.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
