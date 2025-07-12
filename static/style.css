@@ -5,6 +5,7 @@
     offset-position: -100px;
     position: fixed;
     user-select: none;
+    z-index: 10;
 }
 .tabs button{
     float:left;
