@@ -3,6 +3,9 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 app = flask.Flask(__name__)
 @app.route('/')
+def land():
+    return render_template('index.html')
+@app.route('/home')
 def home():
     return render_template('index.html')
 @app.route('/stats')
