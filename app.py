@@ -1,18 +1,19 @@
 import flask
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import render_template
 
 app = flask.Flask(__name__)
+
 @app.route('/')
-def land():
-    return render_template('index.html')
 @app.route('/home')
 def home():
     return render_template('index.html')
+
 @app.route('/stats')
-def about():
+def stats():
     return render_template('stats.html')
+
 @app.route('/camera')
-def support():
+def camera():
     return render_template('camera.html')
 
 if __name__ == '__main__':
