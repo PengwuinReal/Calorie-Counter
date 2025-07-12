@@ -6,6 +6,7 @@ from torchvision import transforms
 from PIL import Image
 import base64
 import io
+from api import get_nutrition
 
 app = flask.Flask(__name__)
 
@@ -93,6 +94,28 @@ def classify_image():
             'success': False,
             'error': str(e)
         })
+
+@app.route('/analyze', methods=['POST'])
+def get_calories():
+    try:
+        data = request.json
+        food_name = data.get('food_name')
+        if not food_name:
+            return jsonify({'success': False,
+                             'error': 'No food name provided'}), 400
+
+        # Query your Spoonacular logic
+        nutrition_info = get_nutrition(food_name)
+
+        return jsonify({
+            'success': True,
+            'food_name': food_name,
+            'nutrition': nutrition_info
+        })
+
+    except Exception as e:
+        return jsonify({'success': False,
+                         'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
