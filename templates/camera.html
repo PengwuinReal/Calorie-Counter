@@ -19,10 +19,15 @@
                     <button id="startCamera">Start Camera</button>
                     <button id="stopCamera">Stop Camera</button>
                     <button id="capturePhoto">Capture Photo</button>
+                    <button id="classifyFood">Classify Food</button>
                 </div>
                 <div id="photoContainer">
                     <h3>Captured Photo:</h3>
                     <img id="photo" alt="Captured photo will appear here" style="max-width: 100%;">
+                </div>
+                <div id="resultContainer">
+                    <h3>Food Classification:</h3>
+                    <div id="classificationResult"></div>
                 </div>
             </div>
         </div>
@@ -34,8 +39,11 @@
             const startCameraBtn = document.getElementById('startCamera');
             const stopCameraBtn = document.getElementById('stopCamera');
             const capturePhotoBtn = document.getElementById('capturePhoto');
+            const classifyFoodBtn = document.getElementById('classifyFood');
+            const resultContainer = document.getElementById('classificationResult');
             
             let stream = null;
+            let capturedImageData = null;
             
             // Start camera function
             async function startCamera() {
@@ -79,16 +87,73 @@
                 const dataURL = canvas.toDataURL('image/png');
                 photo.src = dataURL;
                 photo.style.display = 'block';
+                
+                // Store the captured image data for classification
+                capturedImageData = dataURL;
+                classifyFoodBtn.disabled = false;
+            }
+            
+            // Classify food function
+            async function classifyFood() {
+                if (!capturedImageData) {
+                    alert('Please capture a photo first.');
+                    return;
+                }
+                
+                try {
+                    classifyFoodBtn.disabled = true;
+                    resultContainer.innerHTML = '<div class="loading">Classifying food...</div>';
+                    
+                    const response = await fetch('/classify', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            image: capturedImageData
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        resultContainer.innerHTML = `
+                            <div class="classification-success">
+                                <h4>Detected Food: ${result.prediction.replace(/_/g, ' ').toUpperCase()}</h4>
+                                <p>Confidence: ${result.confidence}%</p>
+                            </div>
+                        `;
+                    } else {
+                        resultContainer.innerHTML = `
+                            <div class="classification-error">
+                                <h4>Classification Failed</h4>
+                                <p>Error: ${result.error}</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error classifying food:', error);
+                    resultContainer.innerHTML = `
+                        <div class="classification-error">
+                            <h4>Classification Failed</h4>
+                            <p>Error: ${error.message}</p>
+                        </div>
+                    `;
+                } finally {
+                    classifyFoodBtn.disabled = false;
+                }
             }
             
             // Event listeners
             startCameraBtn.addEventListener('click', startCamera);
             stopCameraBtn.addEventListener('click', stopCamera);
             capturePhotoBtn.addEventListener('click', capturePhoto);
+            classifyFoodBtn.addEventListener('click', classifyFood);
             
             // Initialize button states
             stopCameraBtn.disabled = true;
             capturePhotoBtn.disabled = true;
+            classifyFoodBtn.disabled = true;
         </script>
     </body>
 </html>
