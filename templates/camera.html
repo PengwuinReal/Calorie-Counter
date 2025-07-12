@@ -1,159 +1,173 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Camera</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
-    </head>
-    <body>
-        <div class="tabs">
-            <a href="home"><button>Home</button></a>
-            <a href="stats"><button>Stats</button></a>
-            <a href="camera"><button>Camera</button></a>
-        </div>
-        <div class="page">
-            <div class="camera-container">
-                <h2>Camera Feed</h2>
-                <video id="video" width="640" height="480" autoplay></video>
-                <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-                <div class="camera-controls">
-                    <button id="startCamera">Start Camera</button>
-                    <button id="stopCamera">Stop Camera</button>
-                    <button id="capturePhoto">Capture Photo</button>
-                    <button id="classifyFood">Classify Food</button>
-                </div>
-                <div id="photoContainer">
-                    <h3>Captured Photo:</h3>
-                    <img id="photo" alt="Captured photo will appear here" style="max-width: 100%;">
-                </div>
-                <div id="resultContainer">
-                    <h3>Food Classification:</h3>
-                    <div id="classificationResult"></div>
-                </div>
+<head>
+    <title>Camera</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+</head>
+<body>
+    <div class="tabs">
+        <a href="home"><button>Home</button></a>
+        <a href="stats"><button>Stats</button></a>
+        <a href="camera"><button>Camera</button></a>
+    </div>
+    <div class="page">
+        <div class="camera-container">
+            <h2>Camera Feed</h2>
+            <video id="video" width="640" height="480" autoplay></video>
+            <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+            <div class="camera-controls">
+                <button id="startCamera">Start Camera</button>
+                <button id="stopCamera">Stop Camera</button>
+                <button id="capturePhoto">Capture Photo</button>
+                <button id="classifyFood">Classify Food</button>
+            </div>
+            <div id="photoContainer">
+                <h3>Captured Photo:</h3>
+                <img id="photo" alt="Captured photo will appear here" style="max-width: 100%;">
+            </div>
+            <div id="resultContainer">
+                <h3>Food Classification:</h3>
+                <div id="classificationResult"></div>
             </div>
         </div>
-        
-        <script>
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            const photo = document.getElementById('photo');
-            const startCameraBtn = document.getElementById('startCamera');
-            const stopCameraBtn = document.getElementById('stopCamera');
-            const capturePhotoBtn = document.getElementById('capturePhoto');
-            const classifyFoodBtn = document.getElementById('classifyFood');
-            const resultContainer = document.getElementById('classificationResult');
-            
-            let stream = null;
-            let capturedImageData = null;
-            
-            // Start camera function
-            async function startCamera() {
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({ 
-                        video: { 
-                            width: { ideal: 640 }, 
-                            height: { ideal: 480 } 
-                        } 
-                    });
-                    video.srcObject = stream;
-                    startCameraBtn.disabled = true;
-                    stopCameraBtn.disabled = false;
-                    capturePhotoBtn.disabled = false;
-                } catch (error) {
-                    console.error('Error accessing camera:', error);
-                    alert('Error accessing camera: ' + error.message);
-                }
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const photo = document.getElementById('photo');
+        const startCameraBtn = document.getElementById('startCamera');
+        const stopCameraBtn = document.getElementById('stopCamera');
+        const capturePhotoBtn = document.getElementById('capturePhoto');
+        const classifyFoodBtn = document.getElementById('classifyFood');
+        const resultContainer = document.getElementById('classificationResult');
+
+        let stream = null;
+        let capturedImageData = null;
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
+                video.srcObject = stream;
+                startCameraBtn.disabled = true;
+                stopCameraBtn.disabled = false;
+                capturePhotoBtn.disabled = false;
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                alert('Error accessing camera: ' + error.message);
             }
-            
-            // Stop camera function
-            function stopCamera() {
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
-                    video.srcObject = null;
-                    stream = null;
-                    startCameraBtn.disabled = false;
-                    stopCameraBtn.disabled = true;
-                    capturePhotoBtn.disabled = true;
-                }
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                stream = null;
+                startCameraBtn.disabled = false;
+                stopCameraBtn.disabled = true;
+                capturePhotoBtn.disabled = true;
             }
-            
-            // Capture photo function
-            function capturePhoto() {
-                const context = canvas.getContext('2d');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0);
-                
-                // Convert canvas to data URL and display
-                const dataURL = canvas.toDataURL('image/png');
-                photo.src = dataURL;
-                photo.style.display = 'block';
-                
-                // Store the captured image data for classification
-                capturedImageData = dataURL;
-                classifyFoodBtn.disabled = false;
+        }
+
+        function capturePhoto() {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+
+            const dataURL = canvas.toDataURL('image/png');
+            photo.src = dataURL;
+            photo.style.display = 'block';
+            capturedImageData = dataURL;
+            classifyFoodBtn.disabled = false;
+        }
+
+        async function classifyFood() {
+            if (!capturedImageData) {
+                alert('Please capture a photo first.');
+                return;
             }
-            
-            // Classify food function
-            async function classifyFood() {
-                if (!capturedImageData) {
-                    alert('Please capture a photo first.');
-                    return;
-                }
-                
-                try {
-                    classifyFoodBtn.disabled = true;
-                    resultContainer.innerHTML = '<div class="loading">Classifying food...</div>';
+
+            try {
+                classifyFoodBtn.disabled = true;
+                resultContainer.innerHTML = '<div class="loading">Classifying food...</div>';
+
+                const response = await fetch('/classify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: capturedImageData })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const foodName = result.prediction;
+                    const confidence = result.confidence;
+
+                    resultContainer.innerHTML = `
+                        <div class="classification-success">
+                            <h4>Detected Food: ${foodName.replace(/_/g, ' ').toUpperCase()}</h4>
+                            <p>Confidence: ${confidence}%</p>
+                        </div>
+                    `;
+
                     
-                    const response = await fetch('/classify', {
+                    const calRes = await fetch('/analyze', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            image: capturedImageData
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ food_name: foodName })
                     });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        resultContainer.innerHTML = `
-                            <div class="classification-success">
-                                <h4>Detected Food: ${result.prediction.replace(/_/g, ' ').toUpperCase()}</h4>
-                                <p>Confidence: ${result.confidence}%</p>
+
+                    const calData = await calRes.json();
+
+                    if (calData.success) {
+                        const nutrition = calData.nutrition;
+                        resultContainer.innerHTML += `
+                            <div class="calorie-info">
+                                <p><strong>Calories:</strong> ${nutrition.calories || 'N/A'} kcal</p>
+                                <p><strong>Info:</strong> ${nutrition.summary || 'No info available'}</p>
+                                ${nutrition.image ? `<img src="${nutrition.image}" style="max-width: 200px; border-radius: 8px;">` : ''}
                             </div>
                         `;
                     } else {
-                        resultContainer.innerHTML = `
-                            <div class="classification-error">
-                                <h4>Classification Failed</h4>
-                                <p>Error: ${result.error}</p>
-                            </div>
-                        `;
+                        resultContainer.innerHTML += `<p class="error">Calorie info unavailable: ${calData.error}</p>`;
                     }
-                } catch (error) {
-                    console.error('Error classifying food:', error);
+
+                } else {
                     resultContainer.innerHTML = `
                         <div class="classification-error">
                             <h4>Classification Failed</h4>
-                            <p>Error: ${error.message}</p>
+                            <p>Error: ${result.error}</p>
                         </div>
                     `;
-                } finally {
-                    classifyFoodBtn.disabled = false;
                 }
+
+            } catch (error) {
+                console.error('Error classifying food:', error);
+                resultContainer.innerHTML = `
+                    <div class="classification-error">
+                        <h4>Classification Failed</h4>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                classifyFoodBtn.disabled = false;
             }
-            
-            // Event listeners
-            startCameraBtn.addEventListener('click', startCamera);
-            stopCameraBtn.addEventListener('click', stopCamera);
-            capturePhotoBtn.addEventListener('click', capturePhoto);
-            classifyFoodBtn.addEventListener('click', classifyFood);
-            
-            // Initialize button states
-            stopCameraBtn.disabled = true;
-            capturePhotoBtn.disabled = true;
-            classifyFoodBtn.disabled = true;
-        </script>
-    </body>
+        }
+
+        startCameraBtn.addEventListener('click', startCamera);
+        stopCameraBtn.addEventListener('click', stopCamera);
+        capturePhotoBtn.addEventListener('click', capturePhoto);
+        classifyFoodBtn.addEventListener('click', classifyFood);
+
+        stopCameraBtn.disabled = true;
+        capturePhotoBtn.disabled = true;
+        classifyFoodBtn.disabled = true;
+    </script>
+</body>
 </html>
