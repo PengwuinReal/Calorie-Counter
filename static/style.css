@@ -97,3 +97,65 @@ footer {
     margin-top: 50px;
     position: absolute;
 }
+
+/* Camera page styles */
+.camera-container {
+    text-align: center;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.camera-container h2 {
+    color: var(--color-dark);
+    margin-bottom: 20px;
+}
+
+.camera-container video {
+    border: 2px solid var(--color-accent);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #000;
+}
+
+.camera-controls {
+    margin: 20px 0;
+}
+
+.camera-controls button {
+    background-color: var(--color-accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.camera-controls button:hover:not(:disabled) {
+    background-color: var(--color-dark);
+}
+
+.camera-controls button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#photoContainer {
+    margin-top: 30px;
+}
+
+#photoContainer h3 {
+    color: var(--color-dark);
+    margin-bottom: 15px;
+}
+
+#photo {
+    border: 2px solid var(--color-accent);
+    border-radius: 10px;
+    display: none;
+    max-width: 100%;
+    height: auto;
+}

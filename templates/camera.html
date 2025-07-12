@@ -11,10 +11,84 @@
             <a href="camera"><button>Camera</button></a>
         </div>
         <div class="page">
-        
-        <p>This is the camera page</p>
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
+            <div class="camera-container">
+                <h2>Camera Feed</h2>
+                <video id="video" width="640" height="480" autoplay></video>
+                <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+                <div class="camera-controls">
+                    <button id="startCamera">Start Camera</button>
+                    <button id="stopCamera">Stop Camera</button>
+                    <button id="capturePhoto">Capture Photo</button>
+                </div>
+                <div id="photoContainer">
+                    <h3>Captured Photo:</h3>
+                    <img id="photo" alt="Captured photo will appear here" style="max-width: 100%;">
+                </div>
+            </div>
         </div>
+        
+        <script>
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const photo = document.getElementById('photo');
+            const startCameraBtn = document.getElementById('startCamera');
+            const stopCameraBtn = document.getElementById('stopCamera');
+            const capturePhotoBtn = document.getElementById('capturePhoto');
+            
+            let stream = null;
+            
+            // Start camera function
+            async function startCamera() {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { 
+                            width: { ideal: 640 }, 
+                            height: { ideal: 480 } 
+                        } 
+                    });
+                    video.srcObject = stream;
+                    startCameraBtn.disabled = true;
+                    stopCameraBtn.disabled = false;
+                    capturePhotoBtn.disabled = false;
+                } catch (error) {
+                    console.error('Error accessing camera:', error);
+                    alert('Error accessing camera: ' + error.message);
+                }
+            }
+            
+            // Stop camera function
+            function stopCamera() {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    video.srcObject = null;
+                    stream = null;
+                    startCameraBtn.disabled = false;
+                    stopCameraBtn.disabled = true;
+                    capturePhotoBtn.disabled = true;
+                }
+            }
+            
+            // Capture photo function
+            function capturePhoto() {
+                const context = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0);
+                
+                // Convert canvas to data URL and display
+                const dataURL = canvas.toDataURL('image/png');
+                photo.src = dataURL;
+                photo.style.display = 'block';
+            }
+            
+            // Event listeners
+            startCameraBtn.addEventListener('click', startCamera);
+            stopCameraBtn.addEventListener('click', stopCamera);
+            capturePhotoBtn.addEventListener('click', capturePhoto);
+            
+            // Initialize button states
+            stopCameraBtn.disabled = true;
+            capturePhotoBtn.disabled = true;
+        </script>
     </body>
 </html>
