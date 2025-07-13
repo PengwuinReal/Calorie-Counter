@@ -40,11 +40,24 @@ def get_nutrition(food_name):
 
     info_data = info_response.json()
     nutrients = info_data.get("nutrition", {}).get("nutrients", [])
-    calories = next((item["amount"] for item in nutrients if item["name"] == "Calories"), "N/A")
+
+    def get_nutrient(name):
+        for n in nutrients:
+            if n["name"].lower() == name.lower():
+                return n["amount"]
+        return "N/A"
+
+    calories = get_nutrient("Calories")
+    protein = get_nutrient("Protein")
+    fat = get_nutrient("Fat")
+    carbs = get_nutrient("Carbohydrates")
 
     return {
         "title": info_data.get("title", food_name),
         "calories": calories,
+        "protein": protein,
+        "fat": fat,
+        "carbs": carbs,
         "summary": info_data.get("summary", "No summary available."),
         "image": info_data.get("image", ""),
         "source": info_data.get("sourceUrl", ""),
