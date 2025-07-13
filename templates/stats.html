@@ -138,23 +138,24 @@
                     `;
                 } 
 
-                // totals = document.getElementById('totals')
-                // totals.innerHTML = `
-                // <div id="totals">
-                //     <p><strong>Total Calories: </strong>${totalCal} kcal</p>
-                //     <p><strong>Total Protein: </strong>${totalProtein}g</p>
-                //     <p><strong>Total Fat: </strong>${totalFat}g</p>
-                //     <p><strong>Total Carbs: </strong>${totalCarbs}g</p>
-                // </div>
-                // `;
 
                 updateGoalStatus();
             }
 
-            function clearData(){
-                fetch("/clear_data");
-                refreshStats();
+            async function clearData() {
+                try {
+                    const res = await fetch("/clear_data");
+                    const data = await res.json();
+                    if (data.success) {
+                        refreshStats();
+                    } else {
+                        console.error("Failed to clear data:", data.error);
+                    }
+                } catch (error) {
+                    console.error("Clear data error:", error);
+                }
             }
+
 
             refreshStatsBtn.addEventListener('click', refreshStats);
             clearDataBtn.addEventListener('click', clearData);
