@@ -24,7 +24,7 @@ body {
 }
 .tabs button {
     float: left;
-    width: 33.33%;
+    width: 25%;
     padding: 16px 16px;
     font-size: 20px;
     background-color: var(--color-light);

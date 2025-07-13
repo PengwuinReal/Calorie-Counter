@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TDEE Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+</head>
+<body>
+    <div class="tabs">
+        <a href="{{ url_for('home') }}"><button>Home</button></a>
+        <a href="{{ url_for('tdee_calculator') }}"><button>TDEE Calculator</button></a>
+        <a href="{{ url_for('stats') }}"><button>Stats</button></a>
+        <a href="{{ url_for('camera') }}"><button>Camera</button></a>
+    </div>
+    <div class="container">
+        <h1>TDEE Calculator</h1>
+        <form id="tdeeForm">
+            <label for="gender">Gender:</label>
+            <select id="gender" required>
+                <option value="">Select...</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <label for="age">Age (years):</label>
+            <input type="number" id="age" min="10" max="120" required>
+
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" min="20" max="300" step="0.1" required>
+
+            <label for="height">Height (cm):</label>
+            <input type="number" id="height" min="100" max="250" step="0.1" required>
+
+            <label for="activity">Activity Level:</label>
+            <select id="activity" required>
+                <option value="">Select...</option>
+                <option value="1.2">Sedentary (little or no exercise)</option>
+                <option value="1.375">Lightly active (light exercise/sports 1-3 days/week)</option>
+                <option value="1.55">Moderately active (moderate exercise/sports 3-5 days/week)</option>
+                <option value="1.725">Very active (hard exercise/sports 6-7 days/week)</option>
+                <option value="1.9">Extra active (very hard exercise & physical job)</option>
+            </select>
+
+            <button type="submit">Calculate TDEE</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        document.getElementById('tdeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value, 10);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const activity = parseFloat(document.getElementById('activity').value);
+            let bmr;
+            if (gender === 'male') {
+                bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+            } else if (gender === 'female') {
+                bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+            } else {
+                document.getElementById('result').textContent = "Please select a gender.";
+                return;
+            }
+
+            const tdee = Math.round(bmr * activity);
+            document.getElementById('result').textContent = `Your TDEE is approximately ${tdee} calories/day.`;
+        });
+    </script>
+</body>
+</html>

@@ -55,7 +55,9 @@ def stats():
 @app.route('/camera')
 def camera():
     return render_template('camera.html')
-
+@app.route('/TDEE-Calculator')
+def tdee_calculator():
+    return render_template('TDEE-Calculator.html')
 @app.route('/classify', methods=['POST'])
 def classify_image():
     try:
