@@ -148,7 +148,12 @@ def get_statistics():
 
 @app.route('/clear_data')
 def clear_statistics():
-    open('statistics.json', 'w')
+    try:
+        with open('statistics.json', 'w') as f:
+            f.write('{}')  # overwrite with empty JSON object
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 
