@@ -66,4 +66,3 @@ logs/
 *.temp
 
 coolvenv
-statistics.json
