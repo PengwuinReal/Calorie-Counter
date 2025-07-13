@@ -13,11 +13,25 @@
         </div>
         <div class="page">
             <div id="goalTracker">
-            <label for="dailyGoal"><strong>Daily Calorie Goal (kcal):</strong></label>
-            <input type="number" id="dailyGoal" placeholder="e.g. 2000" />
-            <button onclick="saveGoal()">Save Goal</button>
-            <p id="goalStatus"></p>
+            <h3>Set Daily Goals</h3>
+            <label for="dailyCal">Calories (kcal):</label>
+            <input type="number" id="dailyCal" placeholder="e.g. 2000"><br>
+            
+            <label for="dailyProtein">Protein (g):</label>
+            <input type="number" id="dailyProtein" placeholder="e.g. 150"><br>
+            
+            <label for="dailyCarbs">Carbs (g):</label>
+            <input type="number" id="dailyCarbs" placeholder="e.g. 250"><br>
+            
+            <label for="dailyFat">Fat (g):</label>
+            <input type="number" id="dailyFat" placeholder="e.g. 70"><br>
+            
+            <button onclick="saveGoals()">Save Goals</button>
+            <div id="goalStatus"></div>
             </div>
+            
+            <br>
+            <br><br>
 
             <button id="refreshStatsBtn">Refresh</button>
             <button id="clearDataBtn">Clear Data</button>
@@ -33,23 +47,45 @@
             let totalFat = 0;
             let totalCarbs = 0;
 
-            function saveGoal() {
-                const goal = document.getElementById("dailyGoal").value;
-                localStorage.setItem("calorieGoal", goal);
+            function saveGoals() {
+                localStorage.setItem("goalCal", document.getElementById("dailyCal").value);
+                localStorage.setItem("goalProtein", document.getElementById("dailyProtein").value);
+                localStorage.setItem("goalCarbs", document.getElementById("dailyCarbs").value);
+                localStorage.setItem("goalFat", document.getElementById("dailyFat").value);
                 updateGoalStatus();
             }
 
             function updateGoalStatus() {
-                const goal = parseInt(localStorage.getItem("calorieGoal"));
-                const goalStatus = document.getElementById("goalStatus");
+                const goalCal = parseInt(localStorage.getItem("goalCal"));
+                const goalProtein = parseInt(localStorage.getItem("goalProtein"));
+                const goalCarbs = parseInt(localStorage.getItem("goalCarbs"));
+                const goalFat = parseInt(localStorage.getItem("goalFat"));
 
-                if (!goal || isNaN(goal)) {
-                    goalStatus.innerText = "No daily goal set.";
-                } else {
-                    const percent = ((totalCal / goal) * 100).toFixed(1);
-                    goalStatus.innerText = `You've consumed ${totalCal} of ${goal} kcal (${percent}%).`;
+                let html = "<h4>Progress Toward Daily Goals</h4>";
+
+                if (!isNaN(goalCal)) {
+                    const calPercent = ((totalCal / goalCal) * 100).toFixed(1);
+                    html += `<p><strong>Calories:</strong> ${totalCal}/${goalCal} kcal (${calPercent}%)</p>`;
                 }
+
+                if (!isNaN(goalProtein)) {
+                    const proteinPercent = ((totalProtein / goalProtein) * 100).toFixed(1);
+                    html += `<p><strong>Protein:</strong> ${totalProtein}/${goalProtein}g (${proteinPercent}%)</p>`;
+                }
+
+                if (!isNaN(goalCarbs)) {
+                    const carbPercent = ((totalCarbs / goalCarbs) * 100).toFixed(1);
+                    html += `<p><strong>Carbs:</strong> ${totalCarbs}/${goalCarbs}g (${carbPercent}%)</p>`;
+                }
+
+                if (!isNaN(goalFat)) {
+                    const fatPercent = ((totalFat / goalFat) * 100).toFixed(1);
+                    html += `<p><strong>Fat:</strong> ${totalFat}/${goalFat}g (${fatPercent}%)</p>`;
+                }
+
+                document.getElementById("goalStatus").innerHTML = html;
             }
+
 
             async function refreshStats(){
                 totalCal = 0;
