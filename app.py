@@ -6,6 +6,9 @@ from torchvision import transforms
 from PIL import Image
 import base64
 import io
+import json
+import time
+import datetime
 from api import get_nutrition
 
 app = flask.Flask(__name__)
@@ -83,17 +86,18 @@ def classify_image():
         predicted_class = food_classes[predicted.item()]
         confidence_score = confidence.item()
         
-        return jsonify({
+        output = jsonify({
             'success': True,
             'prediction': predicted_class,
             'confidence': round(confidence_score * 100, 2)
         })
     
     except Exception as e:
-        return jsonify({
+        output = jsonify({
             'success': False,
             'error': str(e)
         })
+    return output
 
 @app.route('/analyze', methods=['POST'])
 def get_calories():
@@ -101,21 +105,45 @@ def get_calories():
         data = request.json
         food_name = data.get('food_name')
         if not food_name:
-            return jsonify({'success': False,
-                             'error': 'No food name provided'}), 400
+            output = {'success': False,
+                             'error': 'No food name provided'}
 
         # Query your Spoonacular logic
         nutrition_info = get_nutrition(food_name)
 
-        return jsonify({
+        output = {
             'success': True,
             'food_name': food_name,
             'nutrition': nutrition_info
-        })
+        }
 
     except Exception as e:
-        return jsonify({'success': False,
-                         'error': str(e)}), 500
+        output = {'success': False,
+                         'error': str(e)}
+    output['timestamp'] = str(datetime.datetime.fromtimestamp(time.time()))
+    with open('statistics.json','r+') as json_file:
+        try:
+            the_json = json.load(json_file)
+            #the_json = json.loads(json_file.read())
+        except Exception as e:
+            print(str(e))
+            the_json = {}
+    with open('statistics.json','w') as json_file:
+        k = 0
+        while True:
+            if str(k) in the_json:
+                k+=1
+            else:
+                break
+        the_json[str(k)] = output
+        json.dump(the_json, json_file)
+    return jsonify(output)
+
+@app.route('/load_statistics', methods=['POST'])
+def get_statistics():
+    with open('statistics.json', 'r') as json_file:
+        return jsonify(json.load(json_file))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

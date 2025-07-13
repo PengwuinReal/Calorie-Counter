@@ -17,6 +17,7 @@ def get_nutrition(food_name):
 
     search_response = requests.get(search_url, params=search_params)
     if search_response.status_code != 200:
+        print(str(search_response.status_code))
         return {"error": "API request failed."}
 
     search_data = search_response.json()
@@ -46,5 +47,6 @@ def get_nutrition(food_name):
         "calories": calories,
         "summary": info_data.get("summary", "No summary available."),
         "image": info_data.get("image", ""),
-        "source": info_data.get("sourceUrl", "")
+        "source": info_data.get("sourceUrl", ""),
+        "timestamp": info_data.get("timestamp", "")
     }
