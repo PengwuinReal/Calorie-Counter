@@ -1,20 +1,66 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Calorie Counter</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
-    </head>
-    <body>
-        <div class="tabs">
-            <a href="home"><button>Home</button></a>
-            <a href="stats"><button>Stats</button></a>
-            <a href="camera"><button>Camera</button></a>
-        </div>
-        <div class="page">
-        <p>This the home page for the home</p>
-        </div>
-        <div>
+<head>
+    <title>Calorie Counter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+</head>
+<body>
+    <div class="tabs">
+        <a href="{{ url_for('home') }}"><button>Home</button></a>
+        <a href="{{ url_for('stats') }}"><button>Stats</button></a>
+        <a href="{{ url_for('camera') }}"><button>Camera</button></a>
+    </div>
+    <div class="page">
+        <h1>Welcome to Calorie Counter!</h1>
+        <p>Track your meals with just a snap! Our app uses AI to identify food from photos and estimate calories and nutrition instantly.</p>
 
-        </div>
-    </body>
+        <h2>Features</h2>
+        <ul>
+            <li><strong>Food Classification:</strong> Our model identifies 101 different types of foods using AI image identifying.</li>
+            <li><strong>Nutrition Analysis:</strong> Calorie, fat, carbs, and protein info pulled from Spoonacular API.</li>
+            <li><strong>Easy Interface:</strong> Camera, stats, and homepage are one click away with smooth navigation.</li>
+            <li><strong>Track Your Calories:</strong> Your consumed calories are stored in the <a href="{{ url_for('stats') }}">Stats</a> page for you to track.</li>
+        </ul>
+
+        <h2>Get Started</h2>
+        <p>Go to the <a href="{{ url_for('camera') }}">Camera</a> tab to snap a picture and classify your food. Afterwards, glance at your daily food stats in the <a href="{{ url_for('stats') }}">Stats</a> page.</p>
+
+        <h2>Our Mission</h2>
+        <p>At Calorie Counter, our mission is to make healthy living more accessible through technology.
+            We believe that nutrition tracking should be effortless and accurate. By combining AI food identifiers
+            and trusted nutritional data, we aim to empower users to make better food choices — anytime, anywhere.</p>
+
+        <p><em>Built for the VHS Hackathon 2025 </em></p>
+
+        <h2>What Our AI Can Identify</h2>
+        <details>
+            <summary>Click to view the 101 foods our model recognizes</summary>
+            <p style="margin-top: 10px; line-height: 1.8;">
+                Apple Pie, Baby Back Ribs, Baklava, Beef Carpaccio, Beef Tartare, Beet Salad, Beignets,
+                Bibimbap, Bread Pudding, Breakfast Burrito, Bruschetta, Caesar Salad, Cannoli, Caprese Salad,
+                Carrot Cake, Ceviche, Cheesecake, Cheese Plate, Chicken Curry, Chicken Quesadilla, Chicken Wings,
+                Chocolate Cake, Chocolate Mousse, Churros, Clam Chowder, Club Sandwich, Crab Cakes, Creme Brulee,
+                Croque Madame, Cup Cakes, Deviled Eggs, Donuts, Dumplings, Edamame, Eggs Benedict, Escargots,
+                Falafel, Filet Mignon, Fish and Chips, Foie Gras, French Fries, French Onion Soup, French Toast,
+                Fried Calamari, Fried Rice, Frozen Yogurt, Garlic Bread, Gnocchi, Greek Salad, Grilled Cheese Sandwich,
+                Grilled Salmon, Guacamole, Gyoza, Hamburger, Hot and Sour Soup, Hot Dog, Huevos Rancheros, Hummus,
+                Ice Cream, Lasagna, Lobster Bisque, Lobster Roll Sandwich, Macaroni and Cheese, Macarons, Miso Soup,
+                Mussels, Nachos, Omelette, Onion Rings, Oysters, Pad Thai, Paella, Pancakes, Panna Cotta,
+                Peking Duck, Pho, Pizza, Pork Chop, Poutine, Prime Rib, Pulled Pork Sandwich, Ramen, Ravioli,
+                Red Velvet Cake, Risotto, Samosa, Sashimi, Scallops, Seaweed Salad, Shrimp and Grits, Spaghetti Bolognese,
+                Spaghetti Carbonara, Spring Rolls, Steak, Strawberry Shortcake, Sushi, Tacos, Takoyaki, Tiramisu,
+                Tuna Tartare, Waffles
+            </p>
+        </details>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h4>Credits</h4>
+            <p><small>
+                Food classification AI model by <a href="https://huggingface.co/VinnyVortex004/Food101-Classifier" target="_blank" rel="noopener noreferrer">VinnyVortex004's Food101 Classifier</a> — Nutrition data powered by <a href="https://spoonacular.com/food-api" target="_blank" rel="noopener noreferrer">Spoonacular API</a>.
+            </small></p>
+        
+    </div>
+</body>
 </html>
