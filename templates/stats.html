@@ -12,18 +12,51 @@
             <a href="{{ url_for('camera') }}"><button>Camera</button></a>
         </div>
         <div class="page">
+            <div id="goalTracker">
+            <label for="dailyGoal"><strong>Daily Calorie Goal (kcal):</strong></label>
+            <input type="number" id="dailyGoal" placeholder="e.g. 2000" />
+            <button onclick="saveGoal()">Save Goal</button>
+            <p id="goalStatus"></p>
+            </div>
+
             <button id="refreshStatsBtn">Refresh</button>
             <button id="clearDataBtn">Clear Data</button>
             <div id="totals"></div>
             <div id="classificationResult"></div>
+
+
         </div>
         
         <script>
+            let totalCal = 0;
+            let totalProtein = 0;
+            let totalFat = 0;
+            let totalCarbs = 0;
+
+            function saveGoal() {
+                const goal = document.getElementById("dailyGoal").value;
+                localStorage.setItem("calorieGoal", goal);
+                updateGoalStatus();
+            }
+
+            function updateGoalStatus() {
+                const goal = parseInt(localStorage.getItem("calorieGoal"));
+                const goalStatus = document.getElementById("goalStatus");
+
+                if (!goal || isNaN(goal)) {
+                    goalStatus.innerText = "No daily goal set.";
+                } else {
+                    const percent = ((totalCal / goal) * 100).toFixed(1);
+                    goalStatus.innerText = `You've consumed ${totalCal} of ${goal} kcal (${percent}%).`;
+                }
+            }
+
             async function refreshStats(){
                 totalCal = 0;
                 totalProtein = 0;
                 totalFat = 0;
                 totalCarbs = 0;
+
                 try {
                     resultContainer = document.getElementById('classificationResult');
                     resultContainer.innerHTML = '<div id="classificationResult"></div>';
@@ -36,12 +69,8 @@
                     
                     k = 0;
                     while (true){
-                        if (k.toString() in statsJson){
-                            console.log('k = '+k.toString());
-                        }
-                        else{
-                            break;
-                        }
+                        if (!(k.toString() in statsJson)) break;
+
                         calData = statsJson[k.toString()];
                         if (calData.success) {
                             const nutrition = calData.nutrition;
@@ -60,11 +89,8 @@
                         } else {
                             resultContainer.innerHTML += `<p class="error">Calorie info unavailable: ${calData.error}</p>`;
                         }
-                        k += 1
+                        k += 1;
                     }
-                    
-                    
-
 
                 } catch (error) {
                     console.error('Error classifying food:', error);
@@ -75,6 +101,7 @@
                         </div>
                     `;
                 } 
+
                 totals = document.getElementById('totals')
                 totals.innerHTML = `
                 <div id="totals">
@@ -84,16 +111,28 @@
                     <p><strong>Total Carbs: </strong>${totalCarbs}g</p>
                 </div>
                 `;
+
+                updateGoalStatus();
             }
+
             function clearData(){
-                fetch(
-                    "/clear_data",
-                )
-                refreshStats()
+                fetch("/clear_data");
+                refreshStats();
             }
+
             refreshStatsBtn.addEventListener('click', refreshStats);
             clearDataBtn.addEventListener('click', clearData);
+
+            // On page load
+            window.onload = () => {
+                const savedGoal = localStorage.getItem("calorieGoal");
+                if (savedGoal) {
+                    document.getElementById("dailyGoal").value = savedGoal;
+                }
+                refreshStats();
+            };
         </script>
+
         
     </body>
 </html>
