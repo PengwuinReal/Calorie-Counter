@@ -14,14 +14,21 @@
     <div class="page">
         <div class="camera-container">
             <h2>Camera Feed</h2>
-            <video id="video" width="640" height="480" autoplay></video>
+            <video id="video" width="640" height="480" autoplay playsinline></video>
             <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
             <div class="camera-controls">
                 <button id="startCamera">Start Camera</button>
-                <button id="stopCamera">Stop Camera</button>
-                <button id="capturePhoto">Capture Photo</button>
-                <button id="classifyFood">Classify Food</button>
+                <button id="stopCamera" disabled>Stop Camera</button>
+                <button id="flipCamera" disabled>Flip Camera</button>
+                <button id="capturePhoto" disabled>Capture Photo</button>
+                <button id="classifyFood" disabled>Classify Food</button>
             </div>
+
+            <div class="camera-controls">
+                <label for="uploadInput" style="font-weight: bold;">or upload a food image:</label>
+                <input type="file" id="uploadInput" accept="image/*">
+            </div>
+
             <div id="photoContainer">
                 <h3>Captured Photo:</h3>
                 <img id="photo" alt="Captured photo will appear here" style="max-width: 100%;">
@@ -39,21 +46,26 @@
         const photo = document.getElementById('photo');
         const startCameraBtn = document.getElementById('startCamera');
         const stopCameraBtn = document.getElementById('stopCamera');
+        const flipCameraBtn = document.getElementById('flipCamera');
         const capturePhotoBtn = document.getElementById('capturePhoto');
         const classifyFoodBtn = document.getElementById('classifyFood');
+        const uploadImageInput = document.getElementById('uploadInput');
         const resultContainer = document.getElementById('classificationResult');
 
         let stream = null;
         let capturedImageData = null;
+        let useFrontCamera = false;
 
         async function startCamera() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({
+                const constraints = {
                     video: {
+                        facingMode: useFrontCamera ? 'user' : 'environment',
                         width: { ideal: 640 },
                         height: { ideal: 480 }
                     }
-                });
+                };
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
                 video.srcObject = stream;
                 startCameraBtn.disabled = true;
                 stopCameraBtn.disabled = false;
@@ -75,12 +87,17 @@
             }
         }
 
+        function flipCamera() {
+            stopCamera();
+            useFrontCamera = !useFrontCamera;
+            startCamera();
+        }
+
         function capturePhoto() {
             const context = canvas.getContext('2d');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0);
-
             const dataURL = canvas.toDataURL('image/png');
             photo.src = dataURL;
             photo.style.display = 'block';
@@ -88,12 +105,24 @@
             classifyFoodBtn.disabled = false;
         }
 
+        uploadImageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                capturedImageData = e.target.result;
+                photo.src = capturedImageData;
+                photo.style.display = 'block';
+                classifyFoodBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        });
+
         async function classifyFood() {
             if (!capturedImageData) {
-                alert('Please capture a photo first.');
+                alert('Please capture or upload a photo first.');
                 return;
             }
-
             try {
                 classifyFoodBtn.disabled = true;
                 resultContainer.innerHTML = '<div class="loading">Classifying food...</div>';
@@ -117,7 +146,6 @@
                         </div>
                     `;
 
-                    
                     const calRes = await fetch('/analyze', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -138,7 +166,6 @@
                     } else {
                         resultContainer.innerHTML += `<p class="error">Calorie info unavailable: ${calData.error}</p>`;
                     }
-
                 } else {
                     resultContainer.innerHTML = `
                         <div class="classification-error">
@@ -163,6 +190,7 @@
 
         startCameraBtn.addEventListener('click', startCamera);
         stopCameraBtn.addEventListener('click', stopCamera);
+        flipCameraBtn.addEventListener('click', flipCamera);
         capturePhotoBtn.addEventListener('click', capturePhoto);
         classifyFoodBtn.addEventListener('click', classifyFood);
 
