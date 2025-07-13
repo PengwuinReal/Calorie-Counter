@@ -67,23 +67,23 @@
                 let html = "<h4>Progress Toward Daily Goals</h4>";
 
                 if (!isNaN(goalCal)) {
-                    const calPercent = ((totalCal / goalCal) * 100).toFixed(1);
-                    html += `<p><strong>Calories:</strong> ${totalCal}/${goalCal} kcal (${calPercent}%)</p>`;
+                    const calPercent = (Math.round(((totalCal / goalCal) * 100) * 100) / 100).toFixed(1);
+                    html += `<p><strong>Calories:</strong> ${Math.round(totalCal * 100) / 100}/${goalCal} kcal (${calPercent}%)</p>`;
                 }
 
                 if (!isNaN(goalProtein)) {
-                    const proteinPercent = ((totalProtein / goalProtein) * 100).toFixed(1);
-                    html += `<p><strong>Protein:</strong> ${totalProtein}/${goalProtein}g (${proteinPercent}%)</p>`;
+                    const proteinPercent = (Math.round(((totalProtein / goalProtein) * 100) * 100) / 100).toFixed(1);
+                    html += `<p><strong>Protein:</strong> ${Math.round(totalProtein * 100) / 100}/${goalProtein}g (${proteinPercent}%)</p>`;
                 }
 
                 if (!isNaN(goalCarbs)) {
-                    const carbPercent = ((totalCarbs / goalCarbs) * 100).toFixed(1);
-                    html += `<p><strong>Carbs:</strong> ${totalCarbs}/${goalCarbs}g (${carbPercent}%)</p>`;
+                    const carbPercent = (Math.round(((totalCarbs / goalCarbs) * 100) * 100) / 100).toFixed(1);
+                    html += `<p><strong>Carbs:</strong> ${Math.round(totalCarbs * 100) / 100}/${goalCarbs}g (${carbPercent}%)</p>`;
                 }
 
                 if (!isNaN(goalFat)) {
-                    const fatPercent = ((totalFat / goalFat) * 100).toFixed(1);
-                    html += `<p><strong>Fat:</strong> ${totalFat}/${goalFat}g (${fatPercent}%)</p>`;
+                    const fatPercent = (Math.round(((totalFat / goalFat) * 100) * 100) / 100).toFixed(1);
+                    html += `<p><strong>Fat:</strong> ${Math.round(totalFat * 100) / 100}/${goalFat}g (${fatPercent}%)</p>`;
                 }
 
                 document.getElementById("goalStatus").innerHTML = html;
