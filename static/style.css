@@ -7,12 +7,6 @@
     user-select: none;
     z-index: 10;
 }
-.tabs button{
-    float:left;
-    width: 33.33%;
-    padding: 16px 16px;
-    font-size: 20px;
-}
 :root {
     --color-light: #BEE9E8;
     --color-accent: #62B6CB;
@@ -28,7 +22,17 @@ body {
     margin: 0;
     padding: 0;
 }
-
+.tabs button {
+    float: left;
+    width: 33.33%;
+    padding: 16px 16px;
+    font-size: 20px;
+    background-color: var(--color-light);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 0%;
+}
 header {
     background: var(--color-primary);
     color: #fff;
@@ -48,21 +52,6 @@ main {
 
 h1, h2, h3 {
     color: var(--color-dark);
-}
-
-button {
-    background: var(--color-accent);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-button:hover {
-    background: var(--color-primary);
 }
 
 input, select {
@@ -93,10 +82,6 @@ footer {
     width: 100%;
     bottom: 0;
     left: 0;
-}
-.page {
-    margin-top: 50px;
-    position: absolute;
 }
 
 /* Camera page styles */
@@ -151,7 +136,7 @@ footer {
     align-items: center;
 }
 
-.camera-controls button {
+button {
     background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
     color: white;
     border: none;
@@ -165,24 +150,24 @@ footer {
     min-width: 120px;
 }
 
-.camera-controls button:hover:not(:disabled) {
+button:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(27, 73, 101, 0.4);
     background: linear-gradient(135deg, var(--color-dark), var(--color-primary));
 }
 
-.camera-controls button:active {
+button:active {
     transform: translateY(0);
 }
 
-.camera-controls button:disabled {
+button:disabled {
     background: #ccc;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
 }
 
-.camera-controls button:disabled:hover {
+button:disabled:hover {
     transform: none;
     box-shadow: none;
 }
@@ -489,4 +474,11 @@ footer {
     #photo {
         aspect-ratio: 4/3;
     }
+}
+.page {
+    margin-top: 50px;
+    margin-left: 50px;
+    padding-top: 20px;
+    position: absolute;
+    width: calc(100% - 100px);
 }
