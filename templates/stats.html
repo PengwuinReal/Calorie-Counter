@@ -12,19 +12,25 @@
         </div>
         <div class="page">
             <button id="refreshStatsBtn">Refresh</button>
+            <div id="totals"></div>
+            <div id="classificationResult"></div>
         </div>
-        <div id="classificationResult"></div>
+        
         <script>
             async function refreshStats(){
                 try {
                     resultContainer = document.getElementById('classificationResult');
-                    resultContainer.innerHTML = '<div class="loading">Loading statistics...</div>';
+                    resultContainer.innerHTML = '<div id="classificationResult"></div>';
                     const calRes = await fetch('/load_statistics', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: 'yo we did it'
                     });
                     const statsJson = await calRes.json();
+                    totalCal = 0;
+                    totalProtein = 0;
+                    totalFat = 0;
+                    totalCarbs = 0;
                     k = 0;
                     while (true){
                         if (k.toString() in statsJson){
@@ -44,11 +50,26 @@
                                     <p><strong>Time:</strong> ${calData.timestamp || 'Time not found'}</p>
                                 </div>
                             `;
+                            totalCal += nutrition.calories || 0;
+                            totalProtein += nutrition.protein || 0;
+                            totalFat += nutrition.fat || 0;
+                            totalCarbs += nutrition.carbs || 0;
                         } else {
                             resultContainer.innerHTML += `<p class="error">Calorie info unavailable: ${calData.error}</p>`;
                         }
                         k += 1
                     }
+                    totals = document.getElementById('totals')
+                    totals.innerHTML = `
+                    <div id="totals">
+                        <p><strong>Total Calories:</strong>${totalCal} kcal</p>
+                        <p><strong>Total Protein:</strong>${totalProtein}g</p>
+                        <p><strong>Total Fat:</strong>${totalFat}g</p>
+                        <p><strong>Total Carbs:</strong>${totalCarbs}g</p>
+                    </div>
+                    `;
+                    
+
 
                 } catch (error) {
                     console.error('Error classifying food:', error);
