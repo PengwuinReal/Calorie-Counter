@@ -65,7 +65,73 @@
             }
 
             const tdee = Math.round(bmr * activity);
-            document.getElementById('result').textContent = `Your TDEE is approximately ${tdee} calories/day.`;
+            
+            // Calculate macronutrient recommendations
+            const proteinGrams = Math.round(weight * 2.2); // 2.2g per kg body weight
+            const proteinCalories = proteinGrams * 4; // 4 calories per gram
+            const proteinPercent = Math.round((proteinCalories / tdee) * 100);
+            
+            const fatGrams = Math.round(tdee * 0.25 / 9); // 25% of TDEE, 9 calories per gram
+            const fatCalories = fatGrams * 9;
+            const fatPercent = Math.round((fatCalories / tdee) * 100);
+            
+            const carbCalories = tdee - proteinCalories - fatCalories;
+            const carbGrams = Math.round(carbCalories / 4); // 4 calories per gram
+            const carbPercent = Math.round((carbCalories / tdee) * 100);
+            
+            // Display results
+            document.getElementById('result').innerHTML = `
+                <div class="tdee-result">
+                    <h3>🔥 Your TDEE: ${tdee} calories/day</h3>
+                    <p>Total Daily Energy Expenditure - the amount of calories you burn per day</p>
+                </div>
+                
+                <div class="macros-section">
+                    <h3>📊 Recommended Daily Macronutrients:</h3>
+                    
+                    <div class="macro-item protein">
+                        <div class="macro-header">
+                            <span class="macro-name">🥩 Protein</span>
+                            <span class="macro-amount">${proteinGrams}g (${proteinPercent}%)</span>
+                        </div>
+                        <div class="macro-calories">${proteinCalories} calories</div>
+                        <div class="macro-bar">
+                            <div class="macro-fill protein-fill" style="width: ${proteinPercent}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="macro-item carbs">
+                        <div class="macro-header">
+                            <span class="macro-name">🍞 Carbohydrates</span>
+                            <span class="macro-amount">${carbGrams}g (${carbPercent}%)</span>
+                        </div>
+                        <div class="macro-calories">${carbCalories} calories</div>
+                        <div class="macro-bar">
+                            <div class="macro-fill carbs-fill" style="width: ${carbPercent}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="macro-item fats">
+                        <div class="macro-header">
+                            <span class="macro-name">🥑 Fats</span>
+                            <span class="macro-amount">${fatGrams}g (${fatPercent}%)</span>
+                        </div>
+                        <div class="macro-calories">${fatCalories} calories</div>
+                        <div class="macro-bar">
+                            <div class="macro-fill fats-fill" style="width: ${fatPercent}%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recommendations">
+                    <h4>💡 Guidelines:</h4>
+                    <ul>
+                        <li><strong>Protein:</strong> 2.2g per kg body weight for muscle maintenance</li>
+                        <li><strong>Fats:</strong> 25% of total calories for hormone production</li>
+                        <li><strong>Carbs:</strong> Remaining calories for energy and brain function</li>
+                    </ul>
+                </div>
+            `;
         });
     </script>
 </body>
