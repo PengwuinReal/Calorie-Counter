@@ -69,6 +69,7 @@
                 video.srcObject = stream;
                 startCameraBtn.disabled = true;
                 stopCameraBtn.disabled = false;
+                flipCameraBtn.disabled = false;
                 capturePhotoBtn.disabled = false;
             } catch (error) {
                 console.error('Error accessing camera:', error);
@@ -83,6 +84,7 @@
                 stream = null;
                 startCameraBtn.disabled = false;
                 stopCameraBtn.disabled = true;
+                flipCameraBtn.disabled = true
                 capturePhotoBtn.disabled = true;
             }
         }
