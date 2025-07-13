@@ -47,6 +47,15 @@
         <div class="result" id="result"></div>
     </div>
     <script>
+
+        function setGoalsAndRedirect(cal, protein, carbs, fat) {
+                localStorage.setItem("goalCal", cal);
+                localStorage.setItem("goalProtein", protein);
+                localStorage.setItem("goalCarbs", carbs);
+                localStorage.setItem("goalFat", fat);
+                window.location.href = "{{ url_for('stats') }}";
+            }
+
         document.getElementById('tdeeForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const gender = document.getElementById('gender').value;
@@ -63,7 +72,7 @@
                 document.getElementById('result').textContent = "Please select a gender.";
                 return;
             }
-
+            
             const tdee = Math.round(bmr * activity);
             
             // Calculate macronutrient recommendations
@@ -79,6 +88,8 @@
             const carbGrams = Math.round(carbCalories / 4); // 4 calories per gram
             const carbPercent = Math.round((carbCalories / tdee) * 100);
             
+
+
             // Display results
             document.getElementById('result').innerHTML = `
                 <div class="tdee-result">
@@ -131,6 +142,10 @@
                         <li><strong>Carbs:</strong> Remaining calories for energy and brain function</li>
                     </ul>
                 </div>
+                <br><br>
+                <button onclick="setGoalsAndRedirect(${tdee}, ${proteinGrams}, ${carbGrams}, ${fatGrams})">
+                    ➡️ Set as Daily Goals
+                </button>
             `;
         });
     </script>
