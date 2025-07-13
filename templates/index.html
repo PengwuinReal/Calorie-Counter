@@ -6,10 +6,13 @@
 </head>
 <body>
     <div class="tabs">
-        <a href="{{ url_for('home') }}"><button>Home</button></a>
-        <a href="{{ url_for('tdee_calculator') }}"><button>TDEE Calculator</button></a>
-        <a href="{{ url_for('stats') }}"><button>Stats</button></a>
-        <a href="{{ url_for('camera') }}"><button>Camera</button></a>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="ForkCast Logo" class="logo">
+        <div class="tabs-nav">
+            <a href="{{ url_for('home') }}"><button>Home</button></a>
+            <a href="{{ url_for('tdee_calculator') }}"><button>TDEE Calculator</button></a>
+            <a href="{{ url_for('stats') }}"><button>Stats</button></a>
+            <a href="{{ url_for('camera') }}"><button>Camera</button></a>
+        </div>
     </div>
     <div class="page">
         <h1>Welcome to ForkCast!</h1>

@@ -1,6 +1,6 @@
 /* Calorie Counter App Stylesheet */
 .tabs {
-    width: 100%;
+    width: auto;
     overflow: hidden;
     position: fixed;
     top: 0;
@@ -9,7 +9,23 @@
     z-index: 10;
     margin: 0;
     padding: 0;
+    display: flex;
+    align-items: center;
 }
+
+.logo {
+    height: 65px;
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.tabs-nav {
+    display: flex;
+    flex: 1;
+}
+
 :root {
     --color-light: #BEE9E8;
     --color-accent: #62B6CB;
@@ -27,8 +43,7 @@ body {
     padding-top: 0;
 }
 .tabs button {
-    float: left;
-    width: 25%;
+    flex: 1;
     padding: 16px 8px;
     font-size: 18px;
     background-color: var(--color-light);
@@ -91,9 +106,8 @@ footer {
     left: 0;
 }
 
-/* Page layout adjustments for fixed tabs */
 .page {
-    margin-top: 60px; /* Adjust based on tab height */
+    margin-top: 60px; 
     padding: 20px;
     position: relative;
     width: calc(100% - 40px);
@@ -563,7 +577,6 @@ button:disabled:hover {
     color: var(--color-primary);
 }
 
-/* Mobile-specific styles and responsive design */
 @media (max-width: 768px) {
     .camera-container {
         padding: 10px;
@@ -668,6 +681,12 @@ button:disabled:hover {
     .recommendations li {
         font-size: 0.9rem;
     }
+    
+    .logo {
+        height: 55px;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -737,7 +756,26 @@ button:disabled:hover {
     }
 }
 
-/* Enhanced touch targets for mobile */
+@media (max-width: 350px) {
+    .tabs button {
+        font-size: 9px;
+        padding: 6px 1px;
+        line-height: 1.1;
+    }
+    
+    .logo {
+        height: 40px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    
+    .tabs {
+        height: auto;
+        min-height: 40px;
+    }
+}
+
+
 @media (hover: none) and (pointer: coarse) {
     .camera-controls button,
     #classifyFood {
@@ -746,7 +784,6 @@ button:disabled:hover {
     }
 }
 
-/* Landscape orientation adjustments */
 @media (max-width: 768px) and (orientation: landscape) {
     .camera-container {
         flex-direction: row;
@@ -784,18 +821,4 @@ button:disabled:hover {
 .tabs button.active {
     background-color: var(--color-primary);
     color: white;
-}
-
-/* Fix for very small screens where text might be cut off */
-@media (max-width: 350px) {
-    .tabs button {
-        font-size: 9px;
-        padding: 6px 1px;
-        line-height: 1.1;
-    }
-    
-    .tabs {
-        height: auto;
-        min-height: 40px;
-    }
 }
