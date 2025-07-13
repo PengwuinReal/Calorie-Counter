@@ -138,15 +138,15 @@
                     `;
                 } 
 
-                totals = document.getElementById('totals')
-                totals.innerHTML = `
-                <div id="totals">
-                    <p><strong>Total Calories: </strong>${totalCal} kcal</p>
-                    <p><strong>Total Protein: </strong>${totalProtein}g</p>
-                    <p><strong>Total Fat: </strong>${totalFat}g</p>
-                    <p><strong>Total Carbs: </strong>${totalCarbs}g</p>
-                </div>
-                `;
+                // totals = document.getElementById('totals')
+                // totals.innerHTML = `
+                // <div id="totals">
+                //     <p><strong>Total Calories: </strong>${totalCal} kcal</p>
+                //     <p><strong>Total Protein: </strong>${totalProtein}g</p>
+                //     <p><strong>Total Fat: </strong>${totalFat}g</p>
+                //     <p><strong>Total Carbs: </strong>${totalCarbs}g</p>
+                // </div>
+                // `;
 
                 updateGoalStatus();
             }
@@ -161,12 +161,14 @@
 
             // On page load
             window.onload = () => {
-                const savedGoal = localStorage.getItem("calorieGoal");
-                if (savedGoal) {
-                    document.getElementById("dailyGoal").value = savedGoal;
-                }
+                document.getElementById("dailyCal").value = localStorage.getItem("goalCal") || '';
+                document.getElementById("dailyProtein").value = localStorage.getItem("goalProtein") || '';
+                document.getElementById("dailyCarbs").value = localStorage.getItem("goalCarbs") || '';
+                document.getElementById("dailyFat").value = localStorage.getItem("goalFat") || '';
+                updateGoalStatus();
                 refreshStats();
             };
+
         </script>
 
         
