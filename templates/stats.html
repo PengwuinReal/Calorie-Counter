@@ -12,12 +12,17 @@
         </div>
         <div class="page">
             <button id="refreshStatsBtn">Refresh</button>
+            <button id="clearDataBtn">Clear Data</button>
             <div id="totals"></div>
             <div id="classificationResult"></div>
         </div>
         
         <script>
             async function refreshStats(){
+                totalCal = 0;
+                totalProtein = 0;
+                totalFat = 0;
+                totalCarbs = 0;
                 try {
                     resultContainer = document.getElementById('classificationResult');
                     resultContainer.innerHTML = '<div id="classificationResult"></div>';
@@ -27,10 +32,7 @@
                         body: 'yo we did it'
                     });
                     const statsJson = await calRes.json();
-                    totalCal = 0;
-                    totalProtein = 0;
-                    totalFat = 0;
-                    totalCarbs = 0;
+                    
                     k = 0;
                     while (true){
                         if (k.toString() in statsJson){
@@ -59,15 +61,7 @@
                         }
                         k += 1
                     }
-                    totals = document.getElementById('totals')
-                    totals.innerHTML = `
-                    <div id="totals">
-                        <p><strong>Total Calories:</strong>${totalCal} kcal</p>
-                        <p><strong>Total Protein:</strong>${totalProtein}g</p>
-                        <p><strong>Total Fat:</strong>${totalFat}g</p>
-                        <p><strong>Total Carbs:</strong>${totalCarbs}g</p>
-                    </div>
-                    `;
+                    
                     
 
 
@@ -80,8 +74,24 @@
                         </div>
                     `;
                 } 
+                totals = document.getElementById('totals')
+                totals.innerHTML = `
+                <div id="totals">
+                    <p><strong>Total Calories: </strong>${totalCal} kcal</p>
+                    <p><strong>Total Protein: </strong>${totalProtein}g</p>
+                    <p><strong>Total Fat: </strong>${totalFat}g</p>
+                    <p><strong>Total Carbs: </strong>${totalCarbs}g</p>
+                </div>
+                `;
+            }
+            function clearData(){
+                fetch(
+                    "/clear_data",
+                )
+                refreshStats()
             }
             refreshStatsBtn.addEventListener('click', refreshStats);
+            clearDataBtn.addEventListener('click', clearData);
         </script>
         
     </body>

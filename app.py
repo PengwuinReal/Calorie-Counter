@@ -144,6 +144,11 @@ def get_statistics():
     with open('statistics.json', 'r') as json_file:
         return jsonify(json.load(json_file))
 
+@app.route('/clear_data')
+def clear_statistics():
+    open('statistics.json', 'w')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
