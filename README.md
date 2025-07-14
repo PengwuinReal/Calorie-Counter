@@ -12,3 +12,6 @@ The fact that we made a fully functioning web app in approximately a day and a h
 We learned how to integrate AI's with a real-time user input in a full-stack application. We explored working with external API's like Spoonacular, handling image data in JavaScript, and working with deep learning models. We also gained experience in designing a clean user interface and debugging async workflows. Finally, we learned how to collaborate and build complex projects under time pressure and turn a theme into a well-working project.
 ## What's next for ForkCast
 We plan to expand ForkCast by adding meal portion detection using size estimation, integrating health tracking (like calories over time), adding voice command so it is even more accessible, and supporting more food varieties. We also aim to train our own **custom** model in the future to improve prediction accuracy and reduce reliance on external AI's and API's. 
+## Note
+You made need to generate your own API key and put it in a .env https://spoonacular.com/food-api/console#Profile
+Use the pleaserun.bat to install packages and run the server locally.
